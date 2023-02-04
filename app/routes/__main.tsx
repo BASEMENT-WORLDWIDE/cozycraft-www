@@ -1,4 +1,4 @@
-import { Outlet } from "@remix-run/react";
+import { Link, Outlet } from "@remix-run/react";
 import { useAccount, useConnect, useEnsName } from "wagmi";
 
 const AppLayout = () => {
@@ -11,10 +11,17 @@ const AppLayout = () => {
       <nav className="w-full py-1 bg-black text-white sticky top-0">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center">
-            <strong>Cozycraft</strong>
+            <strong>
+              <Link to="/">Cozycraft</Link>
+            </strong>
             <div className="ml-auto">
               {isConnected ? (
-                <span>{ensName ?? address}</span>
+                <div className="flex gap-3">
+                  <Link to={`/refer/${address}`} className="font-semibold">
+                    My Referrals
+                  </Link>
+                  <span>{ensName ?? address}</span>
+                </div>
               ) : (
                 <div className="flex flex-row gap-3">
                   {connectors.map((connector) => (
