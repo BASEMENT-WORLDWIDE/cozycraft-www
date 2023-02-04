@@ -106,7 +106,6 @@ const RedeemReferralCodePage = () => {
       message: `Create a referral code — ${signatureNonce}`,
     });
   }, [data, signatureNonce, signMessageAsync]);
-  console.log({ referrals });
   return (
     <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
       <form
