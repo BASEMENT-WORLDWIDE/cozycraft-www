@@ -6,7 +6,6 @@ import invariant from "tiny-invariant";
 import humanId from "human-id";
 import { db } from "~/db.server";
 import { addToRuntimeWhitelist } from "~/rcon.server";
-import { Input } from "~/components/Input";
 import { Button } from "~/components/Button";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -25,15 +24,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const referralCode = formData.get("referral-code");
-  const username = formData.get("username");
   const publicAddress = formData.get("public-address");
 
   if (typeof referralCode !== "string") {
     throw new Error("No referral code present.");
-  }
-
-  if (typeof username !== "string") {
-    throw new Error("No Minecraft username present.");
   }
 
   let referral = await db.userReferral.findUniqueOrThrow({
@@ -44,6 +38,7 @@ export const action = async ({ request }: ActionArgs) => {
       id: true,
       status: true,
       mojangUUID: true,
+      username: true,
     },
   });
 
@@ -69,7 +64,7 @@ export const action = async ({ request }: ActionArgs) => {
   await db.$transaction([
     db.minecraftAccount.create({
       data: {
-        username,
+        username: referral.username,
         referral: {
           connect: {
             id: referral.id,
@@ -94,7 +89,7 @@ export const action = async ({ request }: ActionArgs) => {
     }),
   ]);
 
-  await addToRuntimeWhitelist(username);
+  await addToRuntimeWhitelist(referral.username);
 
   return redirect("/?success=true");
 };
@@ -106,13 +101,6 @@ const RedeemReferralCodePage = () => {
       <input type="hidden" name="nonce" defaultValue={signatureNonce} />
       <input type="hidden" name="referral-code" defaultValue={referralCode} />
       {/* <input type="hidden" name="public-address" /> */}
-      <Input
-        type="text"
-        label="Minecraft Username"
-        name="username"
-        placeholder="Enter your Minecraft username"
-        required
-      />
       <div>
         <label className="block" htmlFor="connect-wallet">
           Connect your wallet (Optional)

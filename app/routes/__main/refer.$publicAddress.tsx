@@ -2,24 +2,20 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import humanId from "human-id";
+import { useCallback } from "react";
+import { useSignMessage } from "wagmi";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { db } from "~/db.server";
+import { verifySignature } from "~/ethers.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const publicAddress = params.publicAddress;
   const signatureNonce = humanId();
 
-  const user = await db.user.findUniqueOrThrow({
-    where: { publicAddress },
-    select: { id: true },
-  });
-
   const referrals = await db.userReferral.findMany({
     where: {
-      referredById: {
-        in: user.id,
-      },
+      referredById: publicAddress,
     },
     select: {
       id: true,
@@ -42,11 +38,23 @@ export const action = async ({ request }: ActionArgs) => {
   const signature = formData.get("signature");
   const signatureNonce = formData.get("nonce");
   const username = formData.get("username");
-  const publicAddress = formData.get("public-address");
 
   if (typeof username !== "string") {
     throw new Error("No Minecraft username present.");
   }
+
+  if (typeof signature !== "string") {
+    throw new Error("Invalid signature");
+  }
+
+  if (typeof signatureNonce !== "string") {
+    throw new Error("Missing nonce");
+  }
+
+  const publicAddress = verifySignature(
+    `Create a referral code — ${signatureNonce}`,
+    signature
+  );
 
   const getMojangUUID = async (username: string) => {
     try {
@@ -77,7 +85,7 @@ export const action = async ({ request }: ActionArgs) => {
       status: "pending",
       referredBy: {
         connect: {
-          publicAddress: "",
+          publicAddress,
         },
       },
       // expiresAt: // TODO expiry.
@@ -89,6 +97,16 @@ export const action = async ({ request }: ActionArgs) => {
 
 const RedeemReferralCodePage = () => {
   const { referrals, signatureNonce } = useLoaderData<typeof loader>();
+  const { data, signMessageAsync } = useSignMessage();
+  const handleReferralAuthentication = useCallback(async () => {
+    if (typeof data !== "undefined") {
+      return;
+    }
+    await signMessageAsync({
+      message: `Create a referral code — ${signatureNonce}`,
+    });
+  }, [data, signatureNonce, signMessageAsync]);
+  console.log({ referrals });
   return (
     <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
       <form
@@ -96,7 +114,7 @@ const RedeemReferralCodePage = () => {
         className="col-span-full md:col-span-2 flex flex-col gap-2"
       >
         <input type="hidden" name="nonce" defaultValue={signatureNonce} />
-        <input type="hidden" name="signature" />
+        <input type="hidden" name="signature" defaultValue={data} />
         <Input
           name="username"
           label="Minecraft Username"
@@ -105,12 +123,17 @@ const RedeemReferralCodePage = () => {
           required
         />
         <div>
-          <Button type="submit" intent="success">
-            Create Referral
+          <Button
+            type={data ? "submit" : "button"}
+            intent="success"
+            onClick={handleReferralAuthentication}
+          >
+            {data ? "Create Referral" : "Sign Referral"}
           </Button>
         </div>
       </form>
-      <div>
+      <div className="col-span-full md:col-span-5">
+        <h2 className="text-2xl font-semibold mb-1">Referrals</h2>
         {referrals.map((referral) => (
           <div key={referral.id}>
             <strong>{referral.username}</strong>
