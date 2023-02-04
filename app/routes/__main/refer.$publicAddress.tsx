@@ -52,7 +52,10 @@ export const action = async ({ request }: ActionArgs) => {
         `https://api.mojang.com/users/profiles/minecraft/${username}`
       );
       const data: { id: string; name: string } = await response.json();
-      return data.id;
+      let expr =
+        /([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)/gi;
+      let formattedId = data.id.replace(expr, "$1-$2-$3-$4-$5");
+      return formattedId;
     } catch {
       return null;
     }
