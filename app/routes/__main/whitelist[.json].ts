@@ -13,5 +13,5 @@ export const loader = async () => {
     uuid: account.mojangUUID,
     name: account.username,
   }));
-  json(whitelist);
+  return json(whitelist);
 };
