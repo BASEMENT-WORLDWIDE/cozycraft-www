@@ -7,13 +7,9 @@ import { getPlayerXUID } from "@xboxreplay/xboxlive-api";
 import { DateTime } from "luxon";
 import { toMojangUUID } from "./utils.server";
 
-const clientId = process.env.MSFT_APP_ID;
-const clientSecret = process.env.MSFT_APP_SECRET;
 const msftEmailAddress = process.env.MSFT_EMAIL;
 const msftPassword = process.env.MSFT_PWD;
 
-invariant(clientId, "MSFT_APP_ID does not exist.");
-invariant(clientSecret, "MSFT_APP_SECRET does not exist.");
 invariant(msftEmailAddress, "MSFT_EMAIL does not exist.");
 invariant(msftPassword, "MSFT_PWD does not exist.");
 
