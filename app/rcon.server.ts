@@ -9,10 +9,10 @@ const client = new RCON();
 
 const DEFAULT_TIMEOUT = 1000 * 5;
 
-export const reloadWhitelist = async () => {
+export const addToRuntimeWhitelist = async (username: string) => {
   await client.connect("cozycraft.fly.dev", 25575, {
     timeout: DEFAULT_TIMEOUT,
   });
   await client.login(RCON_PASSWORD, { timeout: DEFAULT_TIMEOUT });
-  await client.run("whitelist reload");
+  await client.run(`whitelist add ${username}`);
 };

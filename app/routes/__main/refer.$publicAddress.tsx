@@ -88,23 +88,29 @@ export const action = async ({ request }: ActionArgs) => {
 const RedeemReferralCodePage = () => {
   const { referrals, signatureNonce } = useLoaderData<typeof loader>();
   return (
-    <div>
-      <form method="post">
+    <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+      <form method="post" className="col-span-full md:col-span-2">
         <input type="hidden" name="nonce" defaultValue={signatureNonce} />
         <input type="hidden" name="signature" />
         <div>
-          <label>
+          <label className="block">
             Minecraft Username
             <input
               type="text"
               name="username"
               placeholder="Enter your friends Minecraft username"
               required
+              className="rounded-full"
             />
           </label>
         </div>
         <div>
-          <button type="submit">Create Referral</button>
+          <button
+            type="submit"
+            className="rounded-full w-full py-2 bg-emerald-500 text-emerald-50 text-lg"
+          >
+            Create Referral
+          </button>
         </div>
       </form>
       <div>

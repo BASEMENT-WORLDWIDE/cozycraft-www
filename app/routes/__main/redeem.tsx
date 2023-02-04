@@ -5,7 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import humanId from "human-id";
 import { db } from "~/db.server";
-import { reloadWhitelist } from "~/rcon.server";
+import { addToRuntimeWhitelist } from "~/rcon.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -92,7 +92,7 @@ export const action = async ({ request }: ActionArgs) => {
     }),
   ]);
 
-  await reloadWhitelist();
+  await addToRuntimeWhitelist(username);
 
   return redirect("/?success=true");
 };

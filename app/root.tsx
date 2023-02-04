@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -8,7 +8,12 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { WagmiConfig } from "wagmi";
+import styles from "./styles/app.css";
 import { wagmiClient } from "./wagmi";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",

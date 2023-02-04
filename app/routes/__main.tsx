@@ -7,8 +7,8 @@ const AppLayout = () => {
   const { connect, connectors, isLoading, error, pendingConnector } =
     useConnect();
   return (
-    <div>
-      <nav>
+    <div className="max-w-7xl mx-auto">
+      <nav className="w-full py-3">
         {isConnected ? (
           <span>{ensName ?? address}</span>
         ) : (
