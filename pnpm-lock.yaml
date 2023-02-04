@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/core': ^7.0.0-0
+  '@ethersproject/contracts': ^5.7.0
   '@prisma/client': ^4.9.0
   '@remix-run/dev': ^1.12.0
   '@remix-run/eslint-config': ^1.12.0
@@ -32,6 +33,7 @@ specifiers:
   wagmi: ^0.11.4
 
 dependencies:
+  '@ethersproject/contracts': 5.7.0
   '@prisma/client': 4.9.0_prisma@4.9.0
   '@remix-run/node': 1.12.0
   '@remix-run/react': 1.12.0_biqbaboplfbrettd7655fr4n2y
