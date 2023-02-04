@@ -22,6 +22,7 @@ specifiers:
   buffer-esm: ^1.2.0
   eslint: ^8.27.0
   ethers: ^5.5.1
+  eventemitter3: ^5.0.0
   human-id: ^4.0.0
   prisma: ^4.9.0
   react: ^18.2.0
@@ -44,6 +45,7 @@ dependencies:
   '@wagmi/core': 0.9.4_lcss6daqi2owvh75pvfxwvzu3u
   buffer-esm: 1.2.0
   ethers: 5.7.2
+  eventemitter3: 5.0.0
   human-id: 4.0.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -5878,6 +5880,10 @@ packages:
 
   /eventemitter3/4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    dev: false
+
+  /eventemitter3/5.0.0:
+    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
     dev: false
 
   /events/3.3.0:
