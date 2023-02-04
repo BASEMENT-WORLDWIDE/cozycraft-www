@@ -6,6 +6,8 @@ import invariant from "tiny-invariant";
 import humanId from "human-id";
 import { db } from "~/db.server";
 import { addToRuntimeWhitelist } from "~/rcon.server";
+import { Input } from "~/components/Input";
+import { Button } from "~/components/Button";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -100,29 +102,29 @@ export const action = async ({ request }: ActionArgs) => {
 const RedeemReferralCodePage = () => {
   const { referralCode, signatureNonce } = useLoaderData<typeof loader>();
   return (
-    <form method="post" action="/redeem">
+    <form method="post" action="/redeem" className="flex flex-col gap-2">
       <input type="hidden" name="nonce" defaultValue={signatureNonce} />
       <input type="hidden" name="referral-code" defaultValue={referralCode} />
+      {/* <input type="hidden" name="public-address" /> */}
+      <Input
+        type="text"
+        label="Minecraft Username"
+        name="username"
+        placeholder="Enter your Minecraft username"
+        required
+      />
       <div>
-        <label>
-          Minecraft Username
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter your Minecraft username"
-            required
-          />
-        </label>
-      </div>
-      <div>
-        <label>
+        <label className="block" htmlFor="connect-wallet">
           Connect your wallet (Optional)
-          <input type="hidden" name="public-address" />
-          <button type="button">Connect</button>
         </label>
+        <Button intent="default" type="button" name="connect-wallet">
+          Connect
+        </Button>
       </div>
       <div>
-        <button type="submit">Join Cozycraft</button>
+        <Button type="submit" intent="success">
+          Join Cozycraft
+        </Button>
       </div>
     </form>
   );

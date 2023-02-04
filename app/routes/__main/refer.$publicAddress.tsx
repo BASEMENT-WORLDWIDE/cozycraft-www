@@ -2,6 +2,8 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import humanId from "human-id";
+import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
 import { db } from "~/db.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -89,28 +91,23 @@ const RedeemReferralCodePage = () => {
   const { referrals, signatureNonce } = useLoaderData<typeof loader>();
   return (
     <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
-      <form method="post" className="col-span-full md:col-span-2">
+      <form
+        method="post"
+        className="col-span-full md:col-span-2 flex flex-col gap-2"
+      >
         <input type="hidden" name="nonce" defaultValue={signatureNonce} />
         <input type="hidden" name="signature" />
+        <Input
+          name="username"
+          label="Minecraft Username"
+          type="text"
+          placeholder="Enter your friends Minecraft username"
+          required
+        />
         <div>
-          <label className="block">
-            Minecraft Username
-            <input
-              type="text"
-              name="username"
-              placeholder="Enter your friends Minecraft username"
-              required
-              className="rounded-full"
-            />
-          </label>
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="rounded-full w-full py-2 bg-emerald-500 text-emerald-50 text-lg"
-          >
+          <Button type="submit" intent="success">
             Create Referral
-          </button>
+          </Button>
         </div>
       </form>
       <div>
