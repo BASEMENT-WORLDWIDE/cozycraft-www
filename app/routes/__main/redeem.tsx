@@ -7,7 +7,7 @@ import humanId from "human-id";
 import { db } from "~/db.server";
 import { addToRuntimeWhitelist } from "~/rcon.server";
 import { Button } from "~/components/Button";
-import { useSignMessage } from "wagmi";
+import { useAccount, useConnect, useSignMessage } from "wagmi";
 import { useCallback } from "react";
 import { verifyMessage } from "ethers/lib/utils.js";
 
@@ -18,9 +18,22 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   invariant(referralCode, "No referral code present.");
 
+  const referral = await db.userReferral.findUniqueOrThrow({
+    where: { code: referralCode },
+    select: {
+      code: true,
+      username: true,
+      referredBy: {
+        select: {
+          publicAddress: true,
+        },
+      },
+    },
+  });
+
   return json({
+    referral,
     signatureNonce,
-    referralCode,
   });
 };
 
@@ -99,46 +112,75 @@ export const action = async ({ request }: ActionArgs) => {
     }),
   ]);
 
-  await addToRuntimeWhitelist(referral.username);
+  addToRuntimeWhitelist(referral.username);
 
   return redirect("/?success=true");
 };
 
 const RedeemReferralCodePage = () => {
-  const { referralCode, signatureNonce } = useLoaderData<typeof loader>();
+  const { referral, signatureNonce } = useLoaderData<typeof loader>();
   const { data, signMessageAsync } = useSignMessage();
+  const { isConnected } = useAccount();
   const handleCreateUser = useCallback(async () => {
     if (typeof data !== "undefined") {
       return;
     }
     await signMessageAsync({
-      message: `Associate Minecraft account with wallet — ${signatureNonce}`,
+      message: `Associate Minecraft account with Wallet — ${signatureNonce}`,
     });
   }, [data, signatureNonce, signMessageAsync]);
   return (
-    <form method="post" action="/redeem" className="flex flex-col gap-2">
-      <input type="hidden" name="nonce" defaultValue={signatureNonce} />
-      <input type="hidden" name="signature" defaultValue={data} />
-      <input type="hidden" name="referral-code" defaultValue={referralCode} />
+    <div className="flex flex-col gap-4">
       <div>
-        <label className="block" htmlFor="connect-wallet">
-          Connect your wallet (Optional)
-        </label>
+        <h1 className="text-3xl font-semibold mb-2">
+          Welcome {referral.username}!
+        </h1>
+        <h2 className="text-2xl font-semibold mb-2">
+          You&apos;ve been referred by {referral.referredBy.publicAddress} to
+          join Cozycraft!
+        </h2>
+      </div>
+      <div className="p-3 bg-slate-200 text-slate-700 rounded-lg">
+        <h3 className="text-xl font-medium mb-2">
+          Are you a holder of Cozy Penguins?
+        </h3>
+        <h4 className="text-lg mb-2">
+          Cozy Penguin holders are able to refer others to Cozycraft.{" "}
+          <strong>
+            This is completely, optional and requires you to connect your wallet
+            and provide a signature to ensure you are the owner of the address.
+          </strong>
+        </h4>
         <Button
           intent="default"
           type="button"
-          name="connect-wallet"
           onClick={handleCreateUser}
+          disabled={!isConnected}
+          className="disabled:cursor-not-allowed"
         >
-          Connect
+          Create Account
         </Button>
       </div>
-      <div>
-        <Button type="submit" intent="success">
-          Join Cozycraft
-        </Button>
-      </div>
-    </form>
+      <form method="post" action="/redeem" className="flex flex-col gap-2">
+        <input type="hidden" name="nonce" defaultValue={signatureNonce} />
+        <input type="hidden" name="signature" defaultValue={data} />
+        <input
+          type="hidden"
+          name="referral-code"
+          defaultValue={referral.code}
+        />
+        <div>
+          <Button
+            className="w-full text-center justify-center"
+            size="xl"
+            type="submit"
+            intent="success"
+          >
+            Join Cozycraft
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 
