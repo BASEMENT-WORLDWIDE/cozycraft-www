@@ -34,6 +34,8 @@ export const action = async ({ request }: ActionArgs) => {
     throw new Error("No referral code present.");
   }
 
+  console.log({ signature, nonce });
+
   let referral = await db.userReferral.findUniqueOrThrow({
     where: {
       code: referralCode,
@@ -56,7 +58,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   let user: User | undefined;
 
-  if (typeof signature === "string") {
+  if (typeof signature === "string" && signature.length > 0) {
     let publicAddress = verifyMessage(
       `Associate Minecraft account with wallet — ${nonce}`,
       signature

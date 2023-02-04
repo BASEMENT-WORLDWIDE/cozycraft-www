@@ -107,11 +107,12 @@ const RedeemReferralCodePage = () => {
     });
   }, [data, signatureNonce, signMessageAsync]);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-7 gap-3 md:gap-6">
       <form
         method="post"
         className="col-span-full md:col-span-2 flex flex-col gap-2"
       >
+        <h3 className="text-xl font-semibold mb-1">Refer a Friend</h3>
         <input type="hidden" name="nonce" defaultValue={signatureNonce} />
         <input type="hidden" name="signature" defaultValue={data} />
         <Input
