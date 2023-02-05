@@ -112,7 +112,9 @@ export const action = async ({ request }: ActionArgs) => {
     }),
   ]);
 
-  addToRuntimeWhitelist(referral.username);
+  try {
+    await addToRuntimeWhitelist(referral.username);
+  } catch {}
 
   return redirect("/?success=true");
 };
