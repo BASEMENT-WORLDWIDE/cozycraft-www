@@ -72,22 +72,18 @@ export const action = async ({ request, params }: ActionArgs) => {
   );
 
   const getMojangUUID = async (username: string) => {
-    try {
-      const response = await fetch(
-        `https://api.mojang.com/users/profiles/minecraft/${username}`
-      );
-      if (!response.ok) {
-        const xuid = await getXboxProfileXUID(username);
-        if (!xuid) {
-          throw new Error("Minecraft account not found.");
-        }
-        return hexXUIDToMojangUUID(xUIDToHex(xuid));
+    const response = await fetch(
+      `https://api.mojang.com/users/profiles/minecraft/${username}`
+    );
+    if (!response.ok) {
+      const xuid = await getXboxProfileXUID(username);
+      if (!xuid) {
+        return null;
       }
-      const data: { id: string; name: string } = await response.json();
-      return toMojangUUID(data.id);
-    } catch {
-      return null;
+      return hexXUIDToMojangUUID(xUIDToHex(xuid));
     }
+    const data: { id: string; name: string } = await response.json();
+    return toMojangUUID(data.id);
   };
 
   let mojangUUID = await getMojangUUID(username);
