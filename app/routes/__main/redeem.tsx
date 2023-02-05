@@ -141,16 +141,18 @@ const RedeemReferralCodePage = () => {
         </h2>
       </div>
       <div className="p-3 bg-slate-200 text-slate-700 rounded-lg">
-        <h3 className="text-xl font-medium mb-2">
+        <h3 className="text-xl font-semibold mb-2">
           Are you a holder of Cozy Penguins?
         </h3>
-        <h4 className="text-lg mb-2">
+        <p className="text-lg mb-2">
           Cozy Penguin holders are able to refer others to Cozycraft.{" "}
-          <strong>
-            This is completely, optional and requires you to connect your wallet
-            and provide a signature to ensure you are the owner of the address.
+          <strong className="underline">
+            Creating an account is completely optional.
           </strong>
-        </h4>
+          <br />
+          Creating an account requires you to connect your wallet and provide a
+          signature to ensure you are the owner of the address.
+        </p>
         <Button
           intent="default"
           type="button"
