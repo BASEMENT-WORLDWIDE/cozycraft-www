@@ -6,21 +6,6 @@ module.exports = {
   // so we default back to the standard build output.
   server: process.env.NODE_ENV === "development" ? undefined : "./server.js",
   ignoredRouteFiles: ["**/.*"],
-  serverDependenciesToBundle: [
-    "ethers",
-    "wagmi",
-    "@wagmi/core",
-    "@wagmi/core/connectors/walletConnect",
-    "@wagmi/core/internal",
-    "@wagmi/core/chains",
-    "@wagmi/core/providers/public",
-    "wagmi/providers/public",
-    "@wagmi/connectors",
-    "@wagmi/connectors/injected",
-    "@wagmi/connectors/walletConnect",
-    "wagmi/connectors/injected",
-    "wagmi/connectors/walletConnect"
-  ]
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "api/index.js",

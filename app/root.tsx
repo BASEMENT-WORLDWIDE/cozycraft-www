@@ -1,4 +1,5 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,9 +8,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { WagmiConfig } from "wagmi";
+import { auth } from "./auth.server";
 import styles from "./styles/app.css";
-import { wagmiClient } from "./wagmi";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -21,6 +21,13 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await auth.isAuthenticated(request);
+  return json({
+    user,
+  });
+};
+
 export default function App() {
   return (
     <html lang="en">
@@ -29,13 +36,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <WagmiConfig client={wagmiClient}>
-          <Outlet />
-        </WagmiConfig>
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <script>{`var global = global || window;`}</script>
       </body>
     </html>
   );

@@ -5,7 +5,7 @@ import {
 } from "@xboxreplay/xboxlive-auth";
 import { getPlayerXUID } from "@xboxreplay/xboxlive-api";
 import { DateTime } from "luxon";
-import { toMojangUUID } from "./utils.server";
+import { toMojangUUID } from "./utils";
 
 const msftEmailAddress = process.env.MSFT_EMAIL;
 const msftPassword = process.env.MSFT_PWD;

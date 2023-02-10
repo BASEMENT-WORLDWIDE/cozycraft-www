@@ -11,6 +11,11 @@ datasource db {
   relationMode = "prisma"
 }
 
+enum UserType {
+  guest
+  cozy
+}
+
 enum AccountStatus {
   active
   banned
@@ -18,8 +23,12 @@ enum AccountStatus {
 
 model User {
   id String @id @default(cuid())
-  publicAddress String @unique @map("public_address")
-  status AccountStatus
+  displayName String
+  avatar String
+  email String? @unique
+  discordDiscriminator String @unique
+  type  UserType @default(guest)
+  status AccountStatus @default(active)
   minecraftAccounts MinecraftAccount[]
   referrals UserReferral[]
 
@@ -29,11 +38,17 @@ model User {
   @@index([status])
 }
 
+enum MinecraftAccountType {
+  java
+  bedrock
+}
+
 model MinecraftAccount {
   id String @id @default(cuid())
   mojangUUID String @unique @map("mojang_uuid")
   username String @unique
 
+  accountType MinecraftAccountType @default(java)
   userId String? @map("user_id")
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -55,7 +70,7 @@ model UserReferral {
   id String @id @default(cuid())
   code String @unique
   referredById String @map("referred_by_user_id")
-  referredBy User @relation(fields: [referredById], references: [publicAddress], onDelete: Cascade, onUpdate: Cascade)
+  referredBy User @relation(fields: [referredById], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   username String
   mojangUUID String @unique @map("mojang_uuid")
