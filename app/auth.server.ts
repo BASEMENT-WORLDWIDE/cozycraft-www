@@ -51,7 +51,10 @@ export type DiscordUser = {
   refreshToken: string;
 };
 
-export type SessionUser = Pick<User, "id" | "displayName" | "avatar"> & {
+export type SessionUser = Pick<
+  User,
+  "id" | "displayName" | "avatar" | "type"
+> & {
   accessToken: string;
   refreshToken: string;
 };
@@ -142,6 +145,7 @@ const discordStrategy = new DiscordStrategy(
       id: user.id,
       avatar: user.avatar,
       displayName: user.displayName,
+      type: user.type,
       accessToken,
       refreshToken,
     };

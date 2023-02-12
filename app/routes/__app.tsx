@@ -1,12 +1,12 @@
-import { Form, Link, NavLink, Outlet } from "@remix-run/react";
-import IconMapOutline from "@heroicons/react/24/outline/MapIcon";
-import IconMapSolid from "@heroicons/react/24/solid/MapIcon";
 import IconGiftOutline from "@heroicons/react/24/outline/GiftIcon";
+import IconMapOutline from "@heroicons/react/24/outline/MapIcon";
 import IconGiftSolid from "@heroicons/react/24/solid/GiftIcon";
-import { ServerAddress } from "~/components/ServerAddress";
-import { useOptionalUser } from "~/utils";
+import IconMapSolid from "@heroicons/react/24/solid/MapIcon";
+import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import { IconDiscord } from "~/components/IconDiscord";
 import { IconOpenSea } from "~/components/IconOpenSea";
+import { ServerAddress } from "~/components/ServerAddress";
+import { useOptionalUser } from "~/utils";
 
 const AppLayout = () => {
   const user = useOptionalUser();
@@ -22,36 +22,61 @@ const AppLayout = () => {
             </strong>
             <div className="ml-auto flex items-center gap-3">
               <ServerAddress address="cozycraft.fun" />
-              <NavLink to="/" className="text-emerald-300">
-                {({ isActive }) =>
-                  isActive ? (
-                    <IconMapSolid className="w-6 h-6 fill-current" />
-                  ) : (
-                    <IconMapOutline className="w-6 h-6 stroke-current" />
-                  )
-                }
-              </NavLink>
               {user ? (
                 <>
-                  <NavLink to="/referrals" className="text-indigo-300">
+                  {user.type === "guest" && (
+                    <a
+                      href="https://opensea.io/collection/cozy-penguin"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Cozyverse OpenSea"
+                      className="bg-gold-300 rounded-full inline-flex items-center p-1 gap-2"
+                    >
+                      <IconOpenSea className="w-6 h-6" />{" "}
+                      <span className="pr-2 text-sm font-semibold">
+                        Upgrade to Cozy
+                      </span>
+                    </a>
+                  )}
+                  <NavLink to="/" className="text-emerald-300">
                     {({ isActive }) =>
                       isActive ? (
-                        <IconGiftSolid className="w-6 h-6 fill-current" />
+                        <IconMapSolid className="w-6 h-6 fill-current" />
                       ) : (
-                        <IconGiftOutline className="w-6 h-6 stroke-current" />
+                        <IconMapOutline className="w-6 h-6 stroke-current" />
                       )
                     }
                   </NavLink>
+                  {user.type === "cozy" && (
+                    <NavLink to="/referrals" className="text-indigo-300">
+                      {({ isActive }) =>
+                        isActive ? (
+                          <IconGiftSolid className="w-6 h-6 fill-current" />
+                        ) : (
+                          <IconGiftOutline className="w-6 h-6 stroke-current" />
+                        )
+                      }
+                    </NavLink>
+                  )}
                   <img
                     src={user.avatar}
                     alt={user.displayName}
                     className="rounded-full"
-                    width={24}
-                    height={24}
+                    width={32}
+                    height={32}
                   />
                 </>
               ) : (
                 <>
+                  <NavLink to="/" className="text-emerald-300">
+                    {({ isActive }) =>
+                      isActive ? (
+                        <IconMapSolid className="w-6 h-6 fill-current" />
+                      ) : (
+                        <IconMapOutline className="w-6 h-6 stroke-current" />
+                      )
+                    }
+                  </NavLink>
                   <a
                     href="https://discord.com/invite/cozyverse"
                     target="_blank"
