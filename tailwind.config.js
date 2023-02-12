@@ -127,6 +127,9 @@ module.exports = {
           900: "#201e0b",
         },
       },
+      backgroundImage: {
+        'gaming-pattern': 'linear-gradient(to bottom, transparent, #4481dd 50%), url(/cozy-gaming.png)'
+      },
     },
   },
   plugins: [

@@ -9,6 +9,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.15",
     "@prisma/client": "^4.9.0",
     "@remix-run/node": "^1.12.0",
     "@remix-run/react": "^1.12.0",
@@ -16,6 +17,7 @@
     "@vercel/node": "^2.6.2",
     "@xboxreplay/xboxlive-api": "^3.4.3",
     "@xboxreplay/xboxlive-auth": "^4.0.0",
+    "clsx": "^1.2.1",
     "cva": "npm:class-variance-authority@^0.4.0",
     "human-id": "^4.0.0",
     "luxon": "^3.2.1",

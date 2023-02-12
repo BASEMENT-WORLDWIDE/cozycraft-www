@@ -30,12 +30,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function App() {
   return (
-    <html lang="en">
+    <html className="h-full bg-[#4481dd]" lang="en">
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-repeat-x bg-top h-full bg-gaming-pattern">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
