@@ -9,6 +9,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.10",
     "@heroicons/react": "^2.0.15",
     "@prisma/client": "^4.9.0",
     "@remix-run/node": "^1.12.0",

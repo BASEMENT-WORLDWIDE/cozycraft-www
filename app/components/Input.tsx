@@ -3,25 +3,29 @@ import { forwardRef } from "react";
 
 type InputProps = {
   label: ReactNode;
+  subLabel?: ReactNode;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "className">;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ name, label, ...props }, ref) => {
+  ({ name, label, subLabel, ...props }, ref) => {
     return (
-      <div className="relative rounded-md border border-gray-300 px-3 py-2 shadow-sm focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-600">
+      <div>
         <label
           htmlFor={name}
-          className="absolute -top-2 left-2 -mt-px inline-block bg-white px-1 text-xs font-medium text-gray-900"
+          className="block text-sm font-medium text-gray-700"
         >
           {label}
         </label>
-        <input
-          ref={ref}
-          name={name}
-          id={name}
-          className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
-          {...props}
-        />
+        <div className="mt-1.5">
+          <input
+            ref={ref}
+            name={name}
+            id={name}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            {...props}
+          />
+        </div>
+        {subLabel && <p className="mt-2 text-sm text-gray-500">{subLabel}</p>}
       </div>
     );
   }
