@@ -35,7 +35,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-repeat-x bg-top h-full bg-gaming-pattern">
+      <body className="bg-top h-full bg-gaming-pattern">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

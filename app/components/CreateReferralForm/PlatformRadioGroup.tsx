@@ -22,7 +22,7 @@ export const PlatformRadioGroup = () => {
   return (
     <RadioGroup value={selectedPlatform} onChange={setSelectedPlatform}>
       <RadioGroup.Label className="block text-sm font-medium text-gray-700">
-        Referral Primary Platform
+        Minecraft Type
       </RadioGroup.Label>
       <div className="mt-1.5 flex items-center space-x-3">
         {platforms.map((platform) => (
@@ -33,7 +33,7 @@ export const PlatformRadioGroup = () => {
               clsx(
                 active && checked ? platform.selectedColor : "",
                 checked ? platform.selectedColor : "",
-                "-m-0.5 relative p-2 flex rounded flex-col gap-2 flex-1 items-center justify-center cursor-pointer focus:outline-none"
+                "-m-0.5 relative p-2 flex rounded-lg flex-col gap-2 flex-1 items-center justify-center cursor-pointer focus:outline-none"
               )
             }
           >

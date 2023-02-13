@@ -1,7 +1,7 @@
 import { cva } from "cva";
 
 export const buttonStyles = cva(
-  "inline-flex items-center rounded border border-transparent font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2",
+  "inline-flex items-center rounded-lg border border-transparent font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2",
   {
     variants: {
       size: {

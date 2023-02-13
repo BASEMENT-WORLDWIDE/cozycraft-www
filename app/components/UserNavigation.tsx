@@ -21,16 +21,16 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
           aria-label="Cozyverse OpenSea"
           className="bg-gold-300 rounded-full inline-flex items-center p-1 gap-2"
         >
-          <IconOpenSea className="w-8 h-8 sm:w-6 sm:h-6" />{" "}
+          <IconOpenSea className="w-8 h-8" />{" "}
           <span className="pr-2 text-sm font-semibold">Upgrade to Cozy</span>
         </a>
       )}
       <NavLink to="/" className="text-emerald-300">
         {({ isActive }) =>
           isActive ? (
-            <IconMapSolid className="w-8 h-8 sm:w-6 sm:h-6 fill-current" />
+            <IconMapSolid className="w-8 h-8 fill-current" />
           ) : (
-            <IconMapOutline className="w-8 h-8 sm:w-6 sm:h-6 stroke-current" />
+            <IconMapOutline className="w-8 h-8 stroke-current" />
           )
         }
       </NavLink>
@@ -38,9 +38,9 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
         <NavLink to="/referrals" className="text-indigo-300">
           {({ isActive }) =>
             isActive ? (
-              <IconGiftSolid className="w-8 h-8 sm:w-6 sm:h-6 fill-current" />
+              <IconGiftSolid className="w-8 h-8 fill-current" />
             ) : (
-              <IconGiftOutline className="w-8 h-8 sm:w-6 sm:h-6 stroke-current" />
+              <IconGiftOutline className="w-8 h-8 stroke-current" />
             )
           }
         </NavLink>

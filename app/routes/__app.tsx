@@ -14,7 +14,7 @@ const AppLayout = () => {
             <Link to="/">
               <img src="/logo.png" alt="Cozycraft" width={163} height={32} />
             </Link>
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-6">
               <ServerAddress address="cozycraft.fun" />
               {user ? <UserNavigation user={user} /> : <DefaultNavigation />}
             </div>
