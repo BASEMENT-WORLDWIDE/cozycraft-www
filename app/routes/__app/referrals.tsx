@@ -8,6 +8,7 @@ import { CreateReferralForm } from "~/components/CreateReferralForm";
 import { Input } from "~/components/Input";
 import { ReferralItem } from "~/components/ReferralItem";
 import { db } from "~/db.server";
+import { getMojangUUID } from "~/mojang";
 import { toMojangUUID } from "~/utils";
 import {
   getXboxProfileXUID,
@@ -54,21 +55,6 @@ export const action = async ({ request }: ActionArgs) => {
   if (typeof username !== "string") {
     throw new Error("No Minecraft username present.");
   }
-
-  const getMojangUUID = async (username: string) => {
-    const response = await fetch(
-      `https://api.mojang.com/users/profiles/minecraft/${username}`
-    );
-    if (!response.ok) {
-      const xuid = await getXboxProfileXUID(username);
-      if (!xuid) {
-        return null;
-      }
-      return hexXUIDToMojangUUID(xUIDToHex(xuid));
-    }
-    const data: { id: string; name: string } = await response.json();
-    return toMojangUUID(data.id);
-  };
 
   let mojangUUID = await getMojangUUID(username);
 

@@ -43,6 +43,7 @@ export const action = async ({ request }: ActionArgs) => {
       status: true,
       mojangUUID: true,
       username: true,
+      accountType: true,
     },
   });
 
@@ -60,33 +61,34 @@ export const action = async ({ request }: ActionArgs) => {
   //   },
   // });
 
-  await db.$transaction([
-    db.minecraftAccount.create({
-      data: {
-        username: referral.username,
-        referral: {
-          connect: {
-            id: referral.id,
-          },
-        },
-        status: "active",
-        mojangUUID: referral.mojangUUID,
-        // user: user
-        //   ? {
-        //       connect: {
-        //         publicAddress: user.publicAddress,
-        //       },
-        //     }
-        //   : undefined,
-      },
-    }),
-    db.userReferral.update({
-      where: { id: referral.id },
-      data: {
-        status: "accepted",
-      },
-    }),
-  ]);
+  // await db.$transaction([
+  //   db.minecraftAccount.create({
+  //     data: {
+  //       username: referral.username,
+  //       accountType: referral.accountType,
+  //       referral: {
+  //         connect: {
+  //           id: referral.id,
+  //         },
+  //       },
+  //       status: "active",
+  //       mojangUUID: referral.mojangUUID,
+  //       // user: user
+  //       //   ? {
+  //       //       connect: {
+  //       //         publicAddress: user.publicAddress,
+  //       //       },
+  //       //     }
+  //       //   : undefined,
+  //     },
+  //   }),
+  //   db.userReferral.update({
+  //     where: { id: referral.id },
+  //     data: {
+  //       status: "accepted",
+  //     },
+  //   }),
+  // ]);
 
   try {
     await addToRuntimeWhitelist(referral.username);

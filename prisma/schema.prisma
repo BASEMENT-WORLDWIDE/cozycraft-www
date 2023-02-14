@@ -21,12 +21,17 @@ enum AccountStatus {
   banned
 }
 
+enum Server {
+  survival
+  creative
+}
+
 model User {
   id String @id @default(cuid())
-  displayName String
+  displayName String @map("display_name")
   avatar String
   email String? @unique
-  discordDiscriminator String @unique
+  discordDiscriminator String @unique @map("discord_discriminator")
   type  UserType @default(guest)
   status AccountStatus @default(active)
   minecraftAccounts MinecraftAccount[]
@@ -48,11 +53,14 @@ model MinecraftAccount {
   mojangUUID String @unique @map("mojang_uuid")
   username String @unique
 
-  accountType MinecraftAccountType @default(java)
-  userId String? @map("user_id")
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountType MinecraftAccountType @default(java) @map("account_type")
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  referral UserReferral?
+  referralCode String? @unique @map("referral_code")
+  referral UserReferral? @relation(fields: [referralCode], references: [code], onDelete: SetNull, onUpdate: Cascade)
+
+  homes MinecraftAccountHome[]
 
   status AccountStatus @default(active)
 
@@ -69,15 +77,14 @@ enum ReferralStatus {
 model UserReferral {
   id String @id @default(cuid())
   code String @unique
+  username String
+  accountType MinecraftAccountType @default(java) @map("account_type")
+  mojangUUID String @map("mojang_uuid")
   referredById String @map("referred_by_user_id")
   referredBy User @relation(fields: [referredById], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  username String
-  mojangUUID String @unique @map("mojang_uuid")
   status ReferralStatus @default(pending)
-
-  referredAccountId String? @unique @map("referred_account_id")
-  referredAccount MinecraftAccount? @relation(fields: [referredAccountId], references: [username], onUpdate: Cascade, onDelete: SetNull)
+  minecraftAccount MinecraftAccount?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -85,3 +92,29 @@ model UserReferral {
 
   @@index([referredById])
 }
+
+model MinecraftAccountHome {
+  id String @id @default(cuid())
+  name String
+  x Float
+  z Float
+  y Float
+  minecraftAccountMojangUUID String @map("minecraft_account_mojang_uuid")
+  minecraftAccount MinecraftAccount @relation(fields: [minecraftAccountMojangUUID], references: [mojangUUID], onDelete: Cascade, onUpdate: Cascade)
+  server Server @default(survival)
+  worldName String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([minecraftAccountMojangUUID])
+}
+
+// model ServerStatus  {
+//   id String @id @default(cuid())
+
+//   currentPlayerCount Int @default(0) @map("player_count")
+//   highestPlayerCount Int @default(0) @map("highest_player_count")
+
+//   createdAt DateTime @default(now()) @map("created_at")
+// }

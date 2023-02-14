@@ -128,7 +128,8 @@ module.exports = {
         },
       },
       backgroundImage: {
-        'gaming-pattern': 'linear-gradient(to bottom, transparent, #002d72), url(/cozy-gaming.png)'
+        'gaming-pattern': 'linear-gradient(to bottom, #5100ff9e, #0279e1), url(/cozy-gaming-002.png)',
+        'gaming-pattern-pink': 'linear-gradient(to bottom, #ff2a919e, #f302b4), url(/cozy-gaming-002.png)'
       },
     },
   },
