@@ -1449,6 +1449,10 @@ select {
   --tw-ring-opacity: 0.05;
 }
 
+.ring-offset-gray-100 {
+  --tw-ring-offset-color: #f3f4f6;
+}
+
 .transition-colors {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

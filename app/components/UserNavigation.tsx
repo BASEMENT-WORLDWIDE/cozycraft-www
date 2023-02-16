@@ -6,6 +6,7 @@ import IconMapOutline from "@heroicons/react/24/outline/MapIcon";
 import IconMapSolid from "@heroicons/react/24/solid/MapIcon";
 import { IconOpenSea } from "./IconOpenSea";
 import { UserAvatarMenu } from "./UserAvatarMenu";
+import clsx from "clsx";
 
 type UserNavigationProps = {
   user: Pick<User, "type" | "avatar" | "displayName">;
@@ -35,6 +36,20 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
           )
         }
       </NavLink>
+      <NavLink to="account">
+        {({ isActive }) => (
+          <img
+            src={user.avatar}
+            alt={user.displayName}
+            className={clsx("rounded-full object-cover", {
+              "rounded-full bg-white dark:bg-black text-gray-700 shadow-sm hover:ring-2 hover:ring-indigo-500 hover:ring-offset-2 hover:ring-offset-gray-200 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100":
+                isActive,
+            })}
+            width={32}
+            height={32}
+          />
+        )}
+      </NavLink>
       {user.type === "cozy" && (
         <NavLink to="/referrals" className="text-indigo-300">
           {({ isActive }) =>
@@ -46,7 +61,9 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
           }
         </NavLink>
       )}
-      <UserAvatarMenu />
+      <div className="hidden sm:block">
+        <UserAvatarMenu />
+      </div>
     </>
   );
 };
