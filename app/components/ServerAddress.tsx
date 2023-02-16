@@ -19,13 +19,13 @@ export const ServerAddress = ({ address }: ServerAddressProps) => {
       type="button"
       onClick={handleClick}
       className={clsx(
-        "inline-flex rounded-full gap-2 bg-black bg-opacity-40 p-1 justify-center items-center text-sm",
+        "inline-flex rounded-full gap-2 bg-black bg-opacity-40 p-1 justify-center items-center",
         {
           "cursor-pointer": typeof navigator !== "undefined",
         }
       )}
     >
-      <GlobeAltIcon className="w-6 h-6 pointer-events-none stroke-current" />
+      <GlobeAltIcon className="w-8 h-8 pointer-events-none stroke-current" />
       <span className="pr-2">{address}</span>
     </button>
   );

@@ -91,7 +91,7 @@ const RedeemReferralCodePage = () => {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-7 gap-3 sm:gap-6">
         <div className="col-span-full sm:col-span-3">
-          <h2 className="text-2xl font-semibold mb-2 text-blue-900">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-50">
             Refer a Friend
           </h2>
           <div className="bg-white rounded-2xl p-4">
@@ -99,7 +99,7 @@ const RedeemReferralCodePage = () => {
           </div>
         </div>
         <div className="col-span-full sm:col-span-4">
-          <h3 className="text-2xl font-semibold mb-2 text-blue-900">
+          <h3 className="text-2xl font-semibold mb-4 text-blue-50">
             Referrals
           </h3>
           <div className="flex flex-col bg-white rounded-2xl divide-y divide-stone-200">

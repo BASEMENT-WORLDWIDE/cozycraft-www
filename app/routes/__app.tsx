@@ -12,7 +12,7 @@ const AppLayout = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center">
             <Link to="/">
-              <img src="/logo.png" alt="Cozycraft" width={163} height={32} />
+              <img src="/logo.png" alt="Cozycraft" width={203.75} height={40} />
             </Link>
             <div className="ml-auto flex items-center gap-6">
               <ServerAddress address="cozycraft.fun" />

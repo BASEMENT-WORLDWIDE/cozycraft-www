@@ -5,6 +5,7 @@ import IconGiftSolid from "@heroicons/react/24/solid/GiftIcon";
 import IconMapOutline from "@heroicons/react/24/outline/MapIcon";
 import IconMapSolid from "@heroicons/react/24/solid/MapIcon";
 import { IconOpenSea } from "./IconOpenSea";
+import { UserAvatarMenu } from "./UserAvatarMenu";
 
 type UserNavigationProps = {
   user: Pick<User, "type" | "avatar" | "displayName">;
@@ -45,13 +46,7 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
           }
         </NavLink>
       )}
-      <img
-        src={user.avatar}
-        alt={user.displayName}
-        className="rounded-full"
-        width={32}
-        height={32}
-      />
+      <UserAvatarMenu />
     </>
   );
 };

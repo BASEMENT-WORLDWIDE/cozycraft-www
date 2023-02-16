@@ -53,7 +53,7 @@ export type DiscordUser = {
 
 export type SessionUser = Pick<
   User,
-  "id" | "displayName" | "avatar" | "type"
+  "id" | "displayName" | "avatar" | "type" | "discordDiscriminator"
 > & {
   accessToken: string;
   refreshToken: string;
@@ -146,6 +146,7 @@ const discordStrategy = new DiscordStrategy(
       avatar: user.avatar,
       displayName: user.displayName,
       type: user.type,
+      discordDiscriminator: user.discordDiscriminator,
       accessToken,
       refreshToken,
     };

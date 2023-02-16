@@ -26,6 +26,13 @@ enum Server {
   creative
 }
 
+enum UserOnboardStatus {
+  join_discord
+  link_discord
+  complete_guest
+  complete_cozy
+}
+
 model User {
   id String @id @default(cuid())
   displayName String @map("display_name")
@@ -36,6 +43,7 @@ model User {
   status AccountStatus @default(active)
   minecraftAccounts MinecraftAccount[]
   referrals UserReferral[]
+  onboardStatus UserOnboardStatus?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

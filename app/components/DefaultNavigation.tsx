@@ -10,19 +10,19 @@ export const DefaultNavigation = () => {
       <NavLink to="/" className="text-emerald-300">
         {({ isActive }) =>
           isActive ? (
-            <IconMapSolid className="w-6 h-6 fill-current" />
+            <IconMapSolid className="w-8 h-8 fill-current" />
           ) : (
-            <IconMapOutline className="w-6 h-6 stroke-current" />
+            <IconMapOutline className="w-8 h-8 stroke-current" />
           )
         }
       </NavLink>
-      <a
+      {/* <a
         href="https://discord.com/invite/cozyverse"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Cozyverse Discord"
       >
-        <IconDiscord className="h-6" />
+        <IconDiscord className="h-8" />
       </a>
       <a
         href="https://opensea.io/collection/cozy-penguin"
@@ -30,10 +30,12 @@ export const DefaultNavigation = () => {
         rel="noopener noreferrer"
         aria-label="Cozyverse OpenSea"
       >
-        <IconOpenSea className="w-6 h-6" />
-      </a>
+        <IconOpenSea className="w-8 h-8" />
+      </a> */}
       <Form action="/auth/discord" method="post">
-        <button>Login with Discord</button>
+        <button className="bg-purple-600 px-4 py-2 rounded-full hover:bg-purple-800 transition-colors shadow-sm font-semibold shadow-purple-900">
+          Login with Discord
+        </button>
       </Form>
     </>
   );
