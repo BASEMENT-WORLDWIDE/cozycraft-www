@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,6 +16,13 @@ enum UserType {
 enum AccountStatus {
   active
   banned
+}
+
+enum Role {
+  player
+  moderator
+  admin
+  operator
 }
 
 enum Server {
@@ -44,6 +48,7 @@ model User {
   minecraftAccounts MinecraftAccount[]
   referrals UserReferral[]
   onboardStatus UserOnboardStatus?
+  role Role @default(player)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -71,6 +76,10 @@ model MinecraftAccount {
   homes MinecraftAccountHome[]
 
   status AccountStatus @default(active)
+  role Role @default(player)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([status])

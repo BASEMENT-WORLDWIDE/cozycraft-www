@@ -1,5 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
-import { Link } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
+import ExternalLinkIcon from "@heroicons/react/20/solid/ArrowTopRightOnSquareIcon";
 import clsx from "clsx";
 import { Fragment } from "react";
 import { useUser } from "~/utils";
@@ -36,7 +37,7 @@ export const UserAvatarMenu = () => {
               {`${user.displayName}#${user.discordDiscriminator}`}
             </p>
           </div>
-          <div className="py-2">
+          <div>
             {user.type === "guest" && (
               <Menu.Item>
                 {({ active }) => (
@@ -45,7 +46,9 @@ export const UserAvatarMenu = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={clsx(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                      active
+                        ? "bg-gray-100 text-gray-900 font-medium"
+                        : "text-gray-700",
                       "block px-5 py-3"
                     )}
                   >
@@ -55,31 +58,37 @@ export const UserAvatarMenu = () => {
               </Menu.Item>
             )}
             {user.type === "cozy" && (
-              <Menu.Item>
+              <Menu.Item as="div">
                 {({ active }) => (
-                  <Link
+                  <NavLink
                     to="referrals"
-                    className={clsx(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block px-5 py-3"
-                    )}
+                    className={({ isActive }) =>
+                      clsx("block px-5 py-3", {
+                        "bg-gray-100 text-gray-900 font-medium":
+                          active || isActive,
+                        "text-gray-700": !active && !isActive,
+                      })
+                    }
                   >
                     My Referrals
-                  </Link>
+                  </NavLink>
                 )}
               </Menu.Item>
             )}
-            <Menu.Item>
+            <Menu.Item as="div">
               {({ active }) => (
-                <Link
+                <NavLink
                   to="/account/link"
-                  className={clsx(
-                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                    "block px-5 py-3"
-                  )}
+                  className={({ isActive }) =>
+                    clsx("block px-5 py-3", {
+                      "bg-gray-100 text-gray-900 font-medium":
+                        active || isActive,
+                      "text-gray-700": !active && !isActive,
+                    })
+                  }
                 >
                   Link Minecraft Accounts
-                </Link>
+                </NavLink>
               )}
             </Menu.Item>
             <Menu.Item>
@@ -93,12 +102,13 @@ export const UserAvatarMenu = () => {
                     "block px-5 py-3"
                   )}
                 >
-                  Join Discord
+                  Join Discord{" "}
+                  <ExternalLinkIcon className="fill-gray-700 w-5 h-5 inline-block align-text-top" />
                 </a>
               )}
             </Menu.Item>
           </div>
-          <div className="py-1">
+          <div>
             <form method="POST" action="/logout">
               <Menu.Item>
                 {({ active }) => (

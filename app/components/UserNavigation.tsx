@@ -51,7 +51,7 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
         )}
       </NavLink>
       {user.type === "cozy" && (
-        <NavLink to="/referrals" className="text-indigo-300">
+        <NavLink to="/referrals" className="text-pink-300">
           {({ isActive }) =>
             isActive ? (
               <IconGiftSolid className="w-8 h-8 fill-current" />

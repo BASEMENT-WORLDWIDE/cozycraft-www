@@ -20,7 +20,7 @@ export const ReferralItem = ({
   const handleCopyReferralLink = useCallback(() => {
     if (!navigator.clipboard) return undefined;
     navigator.clipboard.writeText(
-      `https://cozycraft.fun/redeem?code=${referralCode}`
+      `https://cozycraft.fun/redeem/${referralCode}`
     );
   }, [referralCode]);
   return (

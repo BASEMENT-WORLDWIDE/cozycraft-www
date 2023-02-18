@@ -9,7 +9,7 @@ import { addToRuntimeWhitelist } from "~/rcon.server";
 import { commitSession, getSession } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const referralCode = params.referralCode;
+  const referralCode = params.code;
   invariant(referralCode, "No referral code present.");
   const user = await auth.isAuthenticated(request);
 
@@ -52,58 +52,58 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
-  const formData = await request.formData();
-  const referralCode = formData.get("referral-code");
-  const user = await auth.isAuthenticated(request);
+// export const action = async ({ request }: ActionArgs) => {
+//   const formData = await request.formData();
+//   const referralCode = formData.get("referral-code");
+//   const user = await auth.isAuthenticated(request);
 
-  if (user) {
-    throw new Error(
-      "You've already signed up. You can link an account through your profile menu."
-    );
-  }
+//   if (user) {
+//     throw new Error(
+//       "You've already signed up. You can link an account through your profile menu."
+//     );
+//   }
 
-  if (typeof referralCode !== "string") {
-    throw new Error("No referral code present.");
-  }
+//   if (typeof referralCode !== "string") {
+//     throw new Error("No referral code present.");
+//   }
 
-  let referral = await db.userReferral.findUniqueOrThrow({
-    where: {
-      code: referralCode,
-    },
-    select: {
-      id: true,
-      status: true,
-      mojangUUID: true,
-      username: true,
-      accountType: true,
-    },
-  });
+//   let referral = await db.userReferral.findUniqueOrThrow({
+//     where: {
+//       code: referralCode,
+//     },
+//     select: {
+//       id: true,
+//       status: true,
+//       mojangUUID: true,
+//       username: true,
+//       accountType: true,
+//     },
+//   });
 
-  if (referral.status === "accepted") {
-    throw new Error("This referral has already been redeemed.");
-  }
+//   if (referral.status === "accepted") {
+//     throw new Error("This referral has already been redeemed.");
+//   }
 
-  if (referral.status === "expired") {
-    throw new Error("This referral has expired.");
-  }
+//   if (referral.status === "expired") {
+//     throw new Error("This referral has expired.");
+//   }
 
-  const session = await getSession(request.headers.get("Cookie"));
-  const onboardingState = (session.get("onboarding") ||
-    null) as UserOnboardStatus | null;
+//   const session = await getSession(request.headers.get("Cookie"));
+//   const onboardingState = (session.get("onboarding") ||
+//     null) as UserOnboardStatus | null;
 
-  if (onboardingState !== null) {
-    throw new Error("Invalid onboarding state.");
-  }
+//   if (onboardingState !== null) {
+//     throw new Error("Invalid onboarding state.");
+//   }
 
-  session.set("onboarding", "join_discord");
+//   session.set("onboarding", "join_discord");
 
-  return redirect(`/redeem/${referralCode}/join`, {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
-};
+//   return redirect(`/redeem/${referralCode}/join`, {
+//     headers: {
+//       "Set-Cookie": await commitSession(session),
+//     },
+//   });
+// };
 
 const RedeemReferralCodePage = () => {
   const { username, referralCode, referredBy } = useLoaderData<typeof loader>();

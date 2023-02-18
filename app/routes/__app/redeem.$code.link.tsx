@@ -7,10 +7,8 @@ import { db } from "~/db.server";
 import { addToRuntimeWhitelist } from "~/rcon.server";
 import { getSession } from "~/session.server";
 
-export const loader = async ({ request }: LoaderArgs) => {
-  const url = new URL(request.url);
-  const referralCode = url.searchParams.get("code");
-  const step = url.searchParams.get("step") as UserOnboardStatus | null;
+export const loader = async ({ params }: LoaderArgs) => {
+  const referralCode = params.code;
 
   invariant(referralCode, "No referral code present.");
 
@@ -29,93 +27,57 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 
   return json({
-    step,
     username: referral.username,
     referralCode: referral.code,
     referredBy: `${referral.referredBy.displayName}#${referral.referredBy.discordDiscriminator}`,
   });
 };
 
-export const action = async ({ request }: ActionArgs) => {
-  const formData = await request.formData();
-  const referralCode = formData.get("referral-code");
+// export const action = async ({ request }: ActionArgs) => {
+//   const formData = await request.formData();
+//   const referralCode = formData.get("referral-code");
 
-  if (typeof referralCode !== "string") {
-    throw new Error("No referral code present.");
-  }
+//   if (typeof referralCode !== "string") {
+//     throw new Error("No referral code present.");
+//   }
 
-  let referral = await db.userReferral.findUniqueOrThrow({
-    where: {
-      code: referralCode,
-    },
-    select: {
-      id: true,
-      status: true,
-      mojangUUID: true,
-      username: true,
-      accountType: true,
-    },
-  });
+//   let referral = await db.userReferral.findUniqueOrThrow({
+//     where: {
+//       code: referralCode,
+//     },
+//     select: {
+//       id: true,
+//       status: true,
+//       mojangUUID: true,
+//       username: true,
+//       accountType: true,
+//     },
+//   });
 
-  if (referral.status === "accepted") {
-    throw new Error("This referral has already been redeemed.");
-  }
+//   if (referral.status === "accepted") {
+//     throw new Error("This referral has already been redeemed.");
+//   }
 
-  if (referral.status === "expired") {
-    throw new Error("This referral has expired.");
-  }
+//   if (referral.status === "expired") {
+//     throw new Error("This referral has expired.");
+//   }
 
-  //   let user = await db.user.create({
-  //     data: {
-  //       status: "active",
-  //     },
-  //   });
+//   const session = await getSession(request.headers.get("Cookie"));
+//   const onboardingState = (session.get("onboarding") ||
+//     null) as UserOnboardStatus | null;
 
-  //   await db.$transaction([
-  //     db.minecraftAccount.create({
-  //       data: {
-  //         username: referral.username,
-  //         accountType: referral.accountType,
-  //         referral: {
-  //           connect: {
-  //             id: referral.id,
-  //           },
-  //         },
-  //         status: "active",
-  //         mojangUUID: referral.mojangUUID,
-  //         // user: user
-  //         //   ? {
-  //         //       connect: {
-  //         //         publicAddress: user.publicAddress,
-  //         //       },
-  //         //     }
-  //         //   : undefined,
-  //       },
-  //     }),
-  //     db.userReferral.update({
-  //       where: { id: referral.id },
-  //       data: {
-  //         status: "accepted",
-  //       },
-  //     }),
-  //   ]);
+//   if (onboardingState !== "join_discord") {
+//     throw new Error("Invalid onboarding state.");
+//   }
 
-  const session = await getSession(request.headers.get("Cookie"));
-  const onboardingState = (session.get("onboarding") ||
-    null) as UserOnboardStatus | null;
+//   session.set("onboarding", "complete");
 
-  if (onboardingState !== "join_discord") {
-    throw new Error("Invalid onboarding state.");
-  }
+//   try {
+//     await addToRuntimeWhitelist(referral.username);
+//   } catch {}
 
-  session.set("onboarding", "complete");
-
-  try {
-    await addToRuntimeWhitelist(referral.username);
-  } catch {}
-
-  return redirect(`/redeem/${referralCode}/complete`, {});
-};
+//   return redirect(`/redeem/${referralCode}/complete`, {});
+// };
 
 const RedeemLinkDiscordAccountPage = () => {
   const { username, referralCode, referredBy } = useLoaderData<typeof loader>();

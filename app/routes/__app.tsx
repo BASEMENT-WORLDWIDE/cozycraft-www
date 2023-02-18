@@ -8,7 +8,7 @@ const AppLayout = () => {
   const user = useOptionalUser();
   return (
     <>
-      <nav className="hidden sm:block w-full py-4 text-white sticky top-0">
+      <nav className="hidden sm:block w-full py-4 text-white sticky top-0 z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center">
             <Link to="/">
