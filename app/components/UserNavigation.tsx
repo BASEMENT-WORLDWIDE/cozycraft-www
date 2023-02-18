@@ -36,7 +36,7 @@ export const UserNavigation = ({ user }: UserNavigationProps) => {
           )
         }
       </NavLink>
-      <NavLink to="account">
+      <NavLink to="account" className="sm:hidden">
         {({ isActive }) => (
           <img
             src={user.avatar}
