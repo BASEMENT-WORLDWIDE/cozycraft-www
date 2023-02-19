@@ -1,12 +1,13 @@
 import type { UserOnboardStatus } from "@prisma/client";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { auth } from "~/auth.server";
+import { OnboardingSection } from "~/components/OnboardingSection";
+import { UserBit } from "~/components/UserBit";
 import { db } from "~/db.server";
-import { addToRuntimeWhitelist } from "~/rcon.server";
-import { commitSession, getSession } from "~/session.server";
+import { getSession } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const referralCode = params.code;
@@ -38,6 +39,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       username: true,
       referredBy: {
         select: {
+          avatar: true,
           displayName: true,
           discordDiscriminator: true,
         },
@@ -48,7 +50,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({
     username: referral.username,
     referralCode: referral.code,
-    referredBy: `${referral.referredBy.displayName}#${referral.referredBy.discordDiscriminator}`,
+    referredByName: `${referral.referredBy.displayName}#${referral.referredBy.discordDiscriminator}`,
+    referredByAvatar: referral.referredBy.avatar,
   });
 };
 
@@ -106,32 +109,48 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 // };
 
 const RedeemReferralCodePage = () => {
-  const { username, referralCode, referredBy } = useLoaderData<typeof loader>();
+  const { username, referralCode, referredByName, referredByAvatar } =
+    useLoaderData<typeof loader>();
   return (
-    <div className="flex flex-col gap-4 items-center justify-center text-white max-w-3xl mx-auto">
-      <div className="text-justify">
-        <h1 className="text-7xl font-semibold mb-6">Hey there {username}!</h1>
-        <h2 className="text-4xl font-medium mb-2 leading-normal">
-          Welcome to Cozycraft, a casual Minecraft survival experience. We've
-          heard so many great things about you from {referredBy}, and we're
-          thrilled to have you join our community.
-        </h2>
-      </div>
-      <form
-        method="post"
-        action="/redeem"
-        className="flex flex-col gap-2 w-full"
-      >
-        <input type="hidden" name="referral-code" defaultValue={referralCode} />
-        <div>
-          <button
-            type="button"
-            className="bg-lime-400 text-lime-800 rounded-3xl w-full font-semibold py-6 text-2xl hover:bg-lime-600 transition-all hover:text-lime-900 shadow-sm shadow-lime-900"
+    <div className="flex flex-col gap-4 items-center justify-center text-white max-w-3xl mx-auto h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+        <div className="col-span-full sm:col-span-9 flex flex-col gap-5">
+          <OnboardingSection
+            title={
+              <>
+                Hey there <span className="font-semibold">{username}</span>!
+              </>
+            }
           >
-            Continue
-          </button>
+            <p className="text-xl">
+              Welcome to Cozycraft, a casual Minecraft survival experience.
+              We've heard so many great things about you from{" "}
+              <UserBit avatar={referredByAvatar} username={referredByName} />,
+              and we're thrilled to have you join our community.
+            </p>
+            <form
+              method="post"
+              action="/redeem"
+              className="flex flex-col gap-2 w-full"
+            >
+              <input
+                type="hidden"
+                name="referral-code"
+                defaultValue={referralCode}
+              />
+              <div>
+                <button
+                  type="button"
+                  className="bg-lime-400 text-lime-800 rounded-2xl w-full font-semibold py-3 text-xl hover:bg-lime-600 transition-all hover:text-lime-900 shadow-sm shadow-lime-900/20"
+                >
+                  Get Started
+                </button>
+              </div>
+            </form>
+          </OnboardingSection>
         </div>
-      </form>
+        <div className="hidden sm:flex sm:flex-col sm:col-span-3"></div>
+      </div>
     </div>
   );
 };

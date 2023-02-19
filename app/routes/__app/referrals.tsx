@@ -51,6 +51,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return json({
     referrals,
+    referralCount: referrals.length,
     message,
   });
 };
@@ -98,7 +99,7 @@ export const action = async ({ request }: ActionArgs) => {
 const MemoizedReferralItem = memo(ReferralItem);
 
 const RedeemReferralCodePage = () => {
-  const { referrals, message } = useLoaderData<typeof loader>();
+  const { referrals, referralCount, message } = useLoaderData<typeof loader>();
   return (
     <div className="mx-4 sm:mx-0">
       <div className="grid grid-cols-1 sm:grid-cols-7 gap-3 sm:gap-6">
@@ -125,7 +126,7 @@ const RedeemReferralCodePage = () => {
         </div>
         <div className="col-span-full sm:col-span-4">
           <h3 className="text-2xl font-semibold mb-4 text-blue-50">
-            Referrals
+            Referrals ({referralCount})
           </h3>
           <div className="flex flex-col bg-white rounded-2xl divide-y divide-stone-200">
             {referrals.map((referral) => (
