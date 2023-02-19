@@ -47,4 +47,4 @@ export const getXboxProfileXUID = async (gamertag: string) => {
 
 export const xUIDToHex = (xuid: string) => Number(xuid).toString(16);
 export const hexXUIDToMojangUUID = (hexXUID: string) =>
-  toMojangUUID(`0000000000000000${hexXUID}`);
+  toMojangUUID(`0000000000000000000${hexXUID}`);
