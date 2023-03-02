@@ -5,6 +5,7 @@ import { DiscordStrategy } from "remix-auth-discord";
 import invariant from "tiny-invariant";
 import { sessionStorage } from "~/session.server";
 import { db } from "./db.server";
+import humanId from "human-id";
 
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
@@ -53,11 +54,13 @@ export type DiscordUser = {
 
 export type SessionUser = Pick<
   User,
-  "id" | "displayName" | "avatar" | "type" | "discordDiscriminator"
-> & {
-  accessToken: string;
-  refreshToken: string;
-};
+  | "id"
+  | "displayName"
+  | "avatar"
+  | "type"
+  | "discordDiscriminator"
+  | "onboardStatus"
+>;
 
 export let auth = new Authenticator<SessionUser>(sessionStorage);
 
@@ -73,6 +76,7 @@ const discordStrategy = new DiscordStrategy(
     accessToken,
     refreshToken,
     extraParams,
+    context,
     profile,
   }): Promise<SessionUser> => {
     let cozyverseMember: CozyMember | null = null;
@@ -107,33 +111,43 @@ const discordStrategy = new DiscordStrategy(
       console.log(err);
     }
 
+    const getUserAvatar = () => {
+      if (cozyverseMember?.avatar) {
+        return `https://cdn.discordapp.com/guilds/${COZYVERSE_GUILD_ID}/users/${profile.id}/avatars/${cozyverseMember.avatar}.jpg`;
+      } else if (profile.__json.avatar) {
+        return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`;
+      }
+      return `https://cdn.discordapp.com/embed/avatars/${profile.__json.discriminator}.png`;
+    };
+
+    const avatar = getUserAvatar();
+    const userType = isCozyHolder ? "cozy" : "guest";
+
     const user = await db.user.upsert({
       where: {
         id: profile.id,
       },
       create: {
         id: profile.id,
-        avatar: cozyverseMember?.avatar
-          ? `https://cdn.discordapp.com/guilds/${COZYVERSE_GUILD_ID}/users/${profile.id}/avatars/${cozyverseMember.avatar}.jpg`
-          : profile.__json.avatar
-          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
-          : `https://cdn.discordapp.com/embed/avatars/${profile.__json.discriminator}.png`,
+        avatar,
         discordDiscriminator: profile.__json.discriminator,
         displayName: cozyverseMember?.nick ?? profile.__json.username,
         email: profile.__json.email,
-        status: "active",
-        type: isCozyHolder ? "cozy" : "guest",
+        onboardStatus: "link_discord",
+        status: context?.referralCode ? "active" : "banned",
+        discordAccessToken: accessToken,
+        discordRefreshToken: refreshToken,
+        referralCode: humanId({
+          separator: "-",
+        }),
+        type: userType,
       },
       update: {
-        avatar: cozyverseMember?.avatar
-          ? `https://cdn.discordapp.com/guilds/${COZYVERSE_GUILD_ID}/users/${profile.id}/avatars/${cozyverseMember.avatar}.jpg`
-          : profile.__json.avatar
-          ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.__json.avatar}`
-          : `https://cdn.discordapp.com/embed/avatars/${profile.__json.discriminator}.png`,
+        avatar,
         discordDiscriminator: profile.__json.discriminator,
         displayName: cozyverseMember?.nick ?? profile.__json.username,
         email: profile.__json.email,
-        type: isCozyHolder ? "cozy" : "guest",
+        type: userType,
       },
     });
 
@@ -147,8 +161,7 @@ const discordStrategy = new DiscordStrategy(
       displayName: user.displayName,
       type: user.type,
       discordDiscriminator: user.discordDiscriminator,
-      accessToken,
-      refreshToken,
+      onboardStatus: user.onboardStatus,
     };
   }
 );

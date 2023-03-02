@@ -4,6 +4,8 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { auth } from "~/auth.server";
 import { Button } from "~/components/Button";
+import { IconJava } from "~/components/IconJava";
+import { IconMicrosoft } from "~/components/IconMicrosoft";
 import { Input } from "~/components/Input";
 import { db } from "~/db.server";
 import { getMojangUUID } from "~/mojang";
@@ -20,22 +22,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     select: {
       id: true,
       accountType: true,
-      mojangUUID: true,
-      role: true,
       status: true,
       username: true,
       createdAt: true,
-      referral: {
-        select: {
-          referredBy: {
-            select: {
-              displayName: true,
-              discordDiscriminator: true,
-              avatar: true,
-            },
-          },
-        },
-      },
     },
   });
 
@@ -119,6 +108,13 @@ const AccountLinkMinecraftPage = () => {
             className="bg-white shadow-sm shadow-black/25 rounded-xl p-3 flex flex-row items-center"
           >
             <div>
+              <div className="flex-shrink-0 bg-slate-100 p-2 rounded-lg">
+                {account.accountType === "bedrock" ? (
+                  <IconMicrosoft className="w-8 h-8" />
+                ) : (
+                  <IconJava className="w-8 h-8" />
+                )}
+              </div>
               <p>
                 <strong>{account.username}</strong>
               </p>

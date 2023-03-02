@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import type { UserOnboardStatus } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -7,23 +6,48 @@ import invariant from "tiny-invariant";
 import { auth } from "~/auth.server";
 import { OnboardingSection } from "~/components/OnboardingSection";
 import { db } from "~/db.server";
-import { getSession } from "~/session.server";
+import { commitSession, getSession } from "~/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const { displayName, discordDiscriminator, type } =
-    await auth.isAuthenticated(request, {
-      failureRedirect: "/",
-    });
-  const discordName = `${displayName}#${discordDiscriminator}`;
+  const url = new URL(request.url);
+  const referralCode = url.searchParams.get("code");
+  const user = await auth.isAuthenticated(request);
 
-  return json({
-    discordName,
-    accountType: type,
-  });
+  let session = await getSession(request.headers.get("Cookie"));
+  let onboardStatus: UserOnboardStatus = user?.onboardStatus ?? "welcome";
+
+  if (user) {
+    session.set(auth.sessionKey, user);
+  }
+
+  if (referralCode) {
+    session.set("referral_code", referralCode);
+  }
+
+  let headers = new Headers({ "Set-Cookie": await commitSession(session) });
+  let discordName = user
+    ? `${user.displayName}#${user.discordDiscriminator}`
+    : null;
+  return json(
+    {
+      onboardStatus,
+      discordName,
+    },
+    { headers }
+  );
+  // const { displayName, discordDiscriminator, type } =
+  //   await auth.isAuthenticated(request, {
+  //     failureRedirect: "/",
+  //   });
+
+  // return json({
+  //   discordName,
+  //   accountType: type,
+  // });
 };
 
 const WelcomePage = () => {
-  const { discordName, accountType } = useLoaderData<typeof loader>();
+  const { onboardStatus, discordName } = useLoaderData<typeof loader>();
   return (
     <div className="flex flex-col gap-4 items-center justify-center text-white max-w-5xl mx-5 sm:mx-auto h-full">
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-12 items-center">
