@@ -26,6 +26,8 @@ export const loader = async ({ request }: LoaderArgs) => {
     session.set("referral_code", referralCode);
   }
 
+  session.set("onboard", true);
+
   let headers = new Headers({ "Set-Cookie": await commitSession(session) });
   let discordName = user
     ? `${user.displayName}#${user.discordDiscriminator}`
@@ -76,11 +78,11 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const user = await auth.isAuthenticated(request, {
+  let user = await auth.isAuthenticated(request, {
     failureRedirect: "/welcome",
   });
-  const formData = await request.formData();
-  const action = formData.get("action");
+  let formData = await request.formData();
+  let action = formData.get("action");
   if (action === "join") {
   } else if (action === "rules") {
   } else if (action === "create") {
@@ -107,10 +109,10 @@ const WelcomePage = () => {
           <h1 className="text-3xl font-semibold text-white">{title}</h1>
           <p className="text-xl text-white">{description}</p>
           {typeof discordName !== "string" && (
-            <Form action="/auth/discord?onboard=true" method="post">
+            <Form method="post" action="/auth/discord">
               <button
                 name="action"
-                value="link_discord"
+                value="link"
                 disabled={typeof userType !== "undefined"}
                 className="bg-indigo-600 text-white rounded-lg w-full flex items-center justify-center gap-2 font-semibold py-3 disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
@@ -119,7 +121,7 @@ const WelcomePage = () => {
               </button>
             </Form>
           )}
-          <form
+          <Form
             method="post"
             action="/welcome"
             className="flex flex-col gap-4 w-full"
@@ -182,7 +184,7 @@ const WelcomePage = () => {
                 </button>
               </div>
             )}
-          </form>
+          </Form>
         </div>
         <div className="hidden sm:flex sm:flex-col sm:col-span-5">
           <img
