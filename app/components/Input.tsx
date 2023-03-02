@@ -27,9 +27,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className
             )}
             {...props}
+            aria-describedby={subLabel ? `${name}-description` : undefined}
           />
         </div>
-        {subLabel && <p className="mt-2 text-sm text-gray-500">{subLabel}</p>}
+        {subLabel && (
+          <p className="mt-2 text-sm text-gray-500" id={`${name}-description`}>
+            {subLabel}
+          </p>
+        )}
       </>
     );
   }

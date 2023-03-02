@@ -10,11 +10,13 @@ datasource db {
 
 enum UserType {
   guest
+  member
   cozy
 }
 
 enum AccountStatus {
   active
+  inactive
   banned
 }
 

@@ -105,8 +105,10 @@ const discordStrategy = new DiscordStrategy(
         const message = await response.text();
         throw Error(message);
       }
-      cozyverseMember = (await response.json()) as CozyMember;
-      isCozyHolder = cozyverseMember.roles.includes(COZYVERSE_HOLDER_ROLE_ID);
+      cozyverseMember = (await response.json()) as CozyMember | null;
+      if (cozyverseMember) {
+        isCozyHolder = cozyverseMember.roles.includes(COZYVERSE_HOLDER_ROLE_ID);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -121,7 +123,11 @@ const discordStrategy = new DiscordStrategy(
     };
 
     const avatar = getUserAvatar();
-    const userType = isCozyHolder ? "cozy" : "guest";
+    const userType = isCozyHolder
+      ? "cozy"
+      : cozyverseMember
+      ? "member"
+      : "guest";
 
     const user = await db.user.upsert({
       where: {
@@ -134,7 +140,7 @@ const discordStrategy = new DiscordStrategy(
         displayName: cozyverseMember?.nick ?? profile.__json.username,
         email: profile.__json.email,
         onboardStatus: "link_discord",
-        status: context?.referralCode ? "active" : "banned",
+        status: context?.referralCode ? "active" : "inactive",
         discordAccessToken: accessToken,
         discordRefreshToken: refreshToken,
         referralCode: humanId({
