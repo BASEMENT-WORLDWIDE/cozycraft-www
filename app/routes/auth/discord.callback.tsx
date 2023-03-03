@@ -21,5 +21,5 @@ export let loader = async ({ request }: LoaderArgs) => {
     return redirect("/", { headers });
   }
 
-  return redirect("/welcome", { headers });
+  return redirect("/join", { headers });
 };

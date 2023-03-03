@@ -128,6 +128,7 @@ const discordStrategy = new DiscordStrategy(
       : cozyverseMember
       ? "member"
       : "guest";
+    const referralCode = context?.referralCode as string | undefined;
 
     const user = await db.user.upsert({
       where: {
@@ -139,8 +140,15 @@ const discordStrategy = new DiscordStrategy(
         discordDiscriminator: profile.__json.discriminator,
         displayName: cozyverseMember?.nick ?? profile.__json.username,
         email: profile.__json.email,
-        onboardStatus: "link_discord",
-        status: context?.referralCode ? "active" : "inactive",
+        onboardStatus: isCozyHolder ? "join_discord" : "link_discord",
+        status: referralCode ? "active" : "inactive",
+        referredBy: referralCode
+          ? {
+              connect: {
+                referralCode,
+              },
+            }
+          : undefined,
         discordAccessToken: accessToken,
         discordRefreshToken: refreshToken,
         referralCode: humanId({

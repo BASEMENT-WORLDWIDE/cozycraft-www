@@ -33,11 +33,11 @@ enum Server {
 }
 
 enum UserOnboardStatus {
-  welcome
-  join_discord
+  start
   link_discord
-  complete_guest
-  complete_cozy
+  join_discord
+  accept_rules
+  finish
 }
 
 model User {
@@ -46,10 +46,10 @@ model User {
   avatar String
   email String? @unique
   discordDiscriminator String @unique @map("discord_discriminator")
-  type  UserType @default(guest)
+  type UserType @default(guest)
   role Role @default(player)
   status AccountStatus @default(active)
-  onboardStatus UserOnboardStatus @default(welcome) @map("onboard_status")
+  onboardStatus UserOnboardStatus @default(start) @map("onboard_status")
 
   discordAccessToken String @map("discord_access_token")
   discordRefreshToken String @map("discord_refresh_token")
